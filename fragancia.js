@@ -48,10 +48,10 @@ botonBuscar.addEventListener("click", () => {
   perfumes.forEach(perfume => {
     if (perfume.nombre.toLowerCase().includes(texto) || texto === "") {
       const card = document.createElement("div");
-      card.className = "cardstylesolo";
+      card.classList.add("cardstylefiltro");
       card.innerHTML = `
         <img src="${perfume.img}" alt="" class="perfumeimgsola"/>
-        <h3>${perfume.nombre}</h3>
+        <h3 class="h3sola">${perfume.nombre}</h3>
         <p>Tipo: ${perfume.tipo}</p>
         <p class="precio">Precio: $${perfume.precio}</p>
       `;

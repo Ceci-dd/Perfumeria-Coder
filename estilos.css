@@ -9,6 +9,7 @@ body {
   font-family: Arial, sans-serif;
   padding: 0;
   background-color: #fefefe;
+  overflow-x: hidden;
 }
 
 #shopcontent {
@@ -66,6 +67,19 @@ body {
   padding: 10px;
   flex: 1;
   text-align: center;
+}
+
+.h3sola {
+  margin-bottom: 10px;
+  margin-top: 5px;
+  color: #6c5ce7;
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  font-size: 30px;
+}
+
+.cardstylefiltro {
+  border: 2px solid palevioletred;
+  padding: 30px;
 }
 
 .botoncarrito {
