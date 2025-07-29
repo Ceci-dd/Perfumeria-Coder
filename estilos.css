@@ -13,23 +13,23 @@ body {
 }
 
 #shopcontent {
-  max-width: 1000px;
-  width: 100%;
+  width: 50vw;
   display: flex;
-  justify-content: space-around;
-  flex-wrap: wrap;
-  margin: 30px auto 80px auto;
+  justify-content: flex-start;
+  flex-wrap: nowrap;
+  margin-left: 2%;
   gap: 30px;
+  margin-bottom: 3%;
 }
 
 .cardstyle {
-  max-width: 100px;
+  width: 500px;
   border: 1px solid palevioletred;
   border-radius: 10px;
   padding: 20px;
-  flex: 1 1 250px;
-  margin: 0 10px;
   text-align: center;
+  gap: 10px;
+  flex: 1;
 }
 
 .cardstyle h3 {
