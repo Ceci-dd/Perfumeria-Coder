@@ -3,15 +3,15 @@ const carritocontent = document.getElementById("carrito");
 const inputBuscar = document.getElementById("inputprincipal");
 const botonBuscar = document.querySelector(".inputbuscar button");
 
-
-
 const perfumes = [
   { tipo: "Floral", nombre: "Jazmin Suave", precio: 120, img: "medios/perfumejazminsuave.jpeg"},
   { tipo: "Amaderado", nombre: "Cedro del bosque", precio: 150, img: "medios/perfumecedrodelbosque.jpeg"},
   { tipo: "Frutal", nombre: "Pasión", precio: 110, img: "medios/perfumepasion.jpeg" }
 ];
 
-let carrito = [];
+
+let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+mostrarCarrito(); 
 
 perfumes.forEach((perfume) => {
   const card = document.createElement("div");
@@ -33,7 +33,7 @@ perfumes.forEach((perfume) => {
       tipo: perfume.tipo,
       precio: perfume.precio
     });
-
+    localStorage.setItem("carrito", JSON.stringify(carrito));
     mostrarCarrito();
   });
 
@@ -66,6 +66,7 @@ botonBuscar.addEventListener("click", () => {
           tipo: perfume.tipo,
           precio: perfume.precio
         });
+        localStorage.setItem("carrito", JSON.stringify(carrito));
         mostrarCarrito();
       });
 
@@ -86,26 +87,12 @@ function mostrarCarrito() {
       <button onclick="eliminarDelCarrito(${index})" class="eliminarbutton">Eliminar</button>
     `;
 
-
     carritocontent.appendChild(itemDiv);
-
   });
 }
 
-
-
-
-
 function eliminarDelCarrito(index) {
   carrito.splice(index, 1); 
+  localStorage.setItem("carrito", JSON.stringify(carrito));
   mostrarCarrito(); 
 }
-
-
-
-
-
-
-
-
-
