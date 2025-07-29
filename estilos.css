@@ -13,7 +13,8 @@ body {
 }
 
 #shopcontent {
-  max-width: 1600px;
+  max-width: 1000px;
+  width: 100%;
   display: flex;
   justify-content: space-around;
   flex-direction: row;
