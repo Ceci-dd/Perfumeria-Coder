@@ -1,0 +1,5 @@
+[
+  { "id": 1, "tipo": "Floral", "nombre": "Jazmín Suave", "precio": 120, "img": "medios/perfumejazminsuave.jpeg" },
+  { "id": 2, "tipo": "Amaderado", "nombre": "Cedro del Bosque", "precio": 150, "img": "medios/perfumecedrodelbosque.jpeg" },
+  { "id": 3, "tipo": "Frutal", "nombre": "Pasión", "precio": 110, "img": "medios/perfumepasion.jpeg" }
+]

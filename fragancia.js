@@ -1,79 +1,85 @@
 const shopcontent = document.getElementById("shopcontent");
 const carritocontent = document.getElementById("carrito");
 const inputBuscar = document.getElementById("inputprincipal");
-const botonBuscar = document.querySelector(".inputbuscar button");
+const botonBuscar = document.getElementById("buscar");
 
-const perfumes = [
-  { tipo: "Floral", nombre: "Jazmin Suave", precio: 120, img: "medios/perfumejazminsuave.jpeg"},
-  { tipo: "Amaderado", nombre: "Cedro del bosque", precio: 150, img: "medios/perfumecedrodelbosque.jpeg"},
-  { tipo: "Frutal", nombre: "Pasión", precio: 110, img: "medios/perfumepasion.jpeg" }
-];
-
-
+let perfumes = []; 
 let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
-mostrarCarrito(); 
 
-perfumes.forEach((perfume) => {
-  const card = document.createElement("div");
-  card.className = "cardstyle";
-  card.innerHTML = `
-    <img src="${perfume.img}" alt="" class="perfumeimg"/>
-    <h3>${perfume.nombre}</h3>
-    <p>Tipo: ${perfume.tipo}</p>
-    <p class="precio">Precio: $${perfume.precio}</p>
-  `;
-
-  const AgregarAlCarrito = document.createElement("button");
-  AgregarAlCarrito.innerText = "Agregar al Carrito";
-  AgregarAlCarrito.className = "botoncarrito";
-
-  AgregarAlCarrito.addEventListener("click", () => {
-    carrito.push({
-      nombre: perfume.nombre,
-      tipo: perfume.tipo,
-      precio: perfume.precio
-    });
-    localStorage.setItem("carrito", JSON.stringify(carrito));
-    mostrarCarrito();
+fetch("./perfumes.json")
+  .then(response => response.json())
+  .then(data => {
+    perfumes = data;
+    mostrarPerfumes(perfumes);
+  })
+  .catch(() => {
+    Toastify({
+      text: "⚠ Error al cargar perfumes",
+      duration: 3000,
+      gravity: "top",
+      position: "center",
+      style: {
+          background: "linear-gradient(to right, #ff0188ff, #3d001bff)",
+          borderRadius: "10px",
+          fontSize: "28px",  
+          padding: "16px 24px"
+      }
+    }).showToast();
   });
 
-  card.appendChild(AgregarAlCarrito);
-  shopcontent.appendChild(card);
-});
+function mostrarPerfumes(lista) {
+  shopcontent.innerHTML = "";
+
+  lista.forEach((perfume) => {
+    const card = document.createElement("div");
+    card.className = "cardstyle";
+    card.innerHTML = `
+      <img src="${perfume.img}" alt="${perfume.nombre}" class="perfumeimg"/>
+      <h3>${perfume.nombre}</h3>
+      <p>Tipo: ${perfume.tipo}</p>
+      <p class="precio">Precio: $${perfume.precio}</p>
+    `;
+
+    const AgregarAlCarrito = document.createElement("button");
+    AgregarAlCarrito.innerText = "Agregar al Carrito";
+    AgregarAlCarrito.className = "botoncarrito";
+
+    AgregarAlCarrito.addEventListener("click", () => {
+      carrito.push({
+        nombre: perfume.nombre,
+        tipo: perfume.tipo,
+        precio: perfume.precio
+      });
+      localStorage.setItem("carrito", JSON.stringify(carrito));
+      mostrarCarrito();
+
+      Toastify({
+        text: `Has agregado "${perfume.nombre}" al carrito 🛒`,
+        duration: 2000,
+        gravity: "top",
+        position: "right",
+        style: {
+          background: "linear-gradient(to right, #ff0188ff, #3d001bff)",
+          borderRadius: "10px",
+          fontSize: "28px",  
+          padding: "16px 24px"
+        }
+      }).showToast();
+    });
+
+    card.appendChild(AgregarAlCarrito);
+    shopcontent.appendChild(card);
+  });
+}
 
 botonBuscar.addEventListener("click", () => {
   const texto = inputBuscar.value.trim().toLowerCase();
-  shopcontent.innerHTML = "";
 
-  perfumes.forEach(perfume => {
-    if (perfume.nombre.toLowerCase().includes(texto) || texto === "") {
-      const card = document.createElement("div");
-      card.classList.add("cardstylefiltro");
-      card.innerHTML = `
-        <img src="${perfume.img}" alt="" class="perfumeimgsola"/>
-        <h3 class="h3sola">${perfume.nombre}</h3>
-        <p>Tipo: ${perfume.tipo}</p>
-        <p class="precio">Precio: $${perfume.precio}</p>
-      `;
+  const resultados = perfumes.filter(perfume =>
+    perfume.nombre.toLowerCase().includes(texto)
+  );
 
-      const botonAgregar = document.createElement("button");
-      botonAgregar.innerText = "Agregar al Carrito";
-      botonAgregar.className = "botoncarrito";
-
-      botonAgregar.addEventListener("click", () => {
-        carrito.push({
-          nombre: perfume.nombre,
-          tipo: perfume.tipo,
-          precio: perfume.precio
-        });
-        localStorage.setItem("carrito", JSON.stringify(carrito));
-        mostrarCarrito();
-      });
-
-      card.appendChild(botonAgregar);
-      shopcontent.appendChild(card);
-    }
-  });
+  mostrarPerfumes(resultados.length > 0 ? resultados : perfumes);
 });
 
 function mostrarCarrito() {
@@ -84,8 +90,13 @@ function mostrarCarrito() {
     itemDiv.className = "item-carrito";
     itemDiv.innerHTML = `
       <p class="itemscarrito">${item.nombre} - ${item.tipo} - $${item.precio}</p>
-      <button onclick="eliminarDelCarrito(${index})" class="eliminarbutton">Eliminar</button>
+      <button class="eliminarbutton">Eliminar</button>
     `;
+
+    const eliminarButton = itemDiv.querySelector(".eliminarbutton");
+    eliminarButton.addEventListener("click", () => {
+      eliminarDelCarrito(index);
+    });
 
     carritocontent.appendChild(itemDiv);
   });

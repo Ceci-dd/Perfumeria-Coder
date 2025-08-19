@@ -3,16 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Document</title>  
     <link rel="stylesheet" href="./estilos.css">
-
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
 </head>
-
-<header>
-    <img src="./medios/portada.png" alt="" class="portada">
-</header>
-
 <body>
+    <header class="d-flex justify-content-between align-items-center p-3 bg-light">
+        <img src="./medios/portada.png" alt="Portada" class="portada">
+        <button class="btn-ver-carrito" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDark" aria-controls="offcanvasDark">
+        🛒 Ver Carrito
+        </button>
+    </header>
+
+    <div class="offcanvas offcanvas-end text-bg-dark" tabindex="-1" id="offcanvasDark" aria-labelledby="offcanvasDarkLabel">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="offcanvasDarkLabel">Tu Carrito</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body" id="carrito">
+            <p>Aquí se mostrarán los productos del carrito.</p>
+        </div>
+    </div>
 
     <div class="inputbuscar">
         <input id="inputprincipal" class="input_principal" type="text" placeholder="Busca tu perfume">
@@ -21,10 +33,8 @@
 
     <div id="shopcontent" class="shop_content"></div>
 
-    <h2 class="ver-carrito" id="verCarrito">Ver Carrito</h2>
-    <div id="carrito"></div>
-
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     <script src="./fragancia.js"></script>
-   
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
