@@ -2,6 +2,7 @@ const shopcontent = document.getElementById("shopcontent");
 const carritocontent = document.getElementById("carrito");
 const inputBuscar = document.getElementById("inputprincipal");
 const botonBuscar = document.getElementById("buscar");
+const contadorCarrito = document.getElementById("contador-carrito");
 
 let perfumes = []; 
 let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
@@ -11,6 +12,7 @@ fetch("./perfumes.json")
   .then(data => {
     perfumes = data;
     mostrarPerfumes(perfumes);
+    actualizarContador();
   })
   .catch(() => {
     Toastify({
@@ -19,10 +21,10 @@ fetch("./perfumes.json")
       gravity: "top",
       position: "center",
       style: {
-          background: "linear-gradient(to right, #ff0188ff, #3d001bff)",
-          borderRadius: "10px",
-          fontSize: "28px",  
-          padding: "16px 24px"
+        background: "linear-gradient(to right, #ff0188ff, #3d001bff)",
+        borderRadius: "10px",
+        fontSize: "28px",  
+        padding: "16px 24px"
       }
     }).showToast();
   });
@@ -30,7 +32,12 @@ fetch("./perfumes.json")
 function mostrarPerfumes(lista) {
   shopcontent.innerHTML = "";
 
-  lista.forEach((perfume) => {
+  if (lista.length === 0) {
+    shopcontent.innerHTML = `<p class="sin-resultados">❌ No se encontraron resultados</p>`;
+    return;
+  }
+
+  lista.forEach(perfume => {
     const card = document.createElement("div");
     card.className = "cardstyle";
     card.innerHTML = `
@@ -40,18 +47,27 @@ function mostrarPerfumes(lista) {
       <p class="precio">Precio: $${perfume.precio}</p>
     `;
 
-    const AgregarAlCarrito = document.createElement("button");
-    AgregarAlCarrito.innerText = "Agregar al Carrito";
-    AgregarAlCarrito.className = "botoncarrito";
+    const botonAgregar = document.createElement("button");
+    botonAgregar.innerText = "Agregar al Carrito";
+    botonAgregar.className = "botoncarrito";
 
-    AgregarAlCarrito.addEventListener("click", () => {
-      carrito.push({
-        nombre: perfume.nombre,
-        tipo: perfume.tipo,
-        precio: perfume.precio
-      });
+    botonAgregar.addEventListener("click", () => {
+      const productoExistente = carrito.find(item => item.nombre === perfume.nombre);
+
+      if (productoExistente) {
+        productoExistente.cantidad += 1;
+      } else {
+        carrito.push({
+          nombre: perfume.nombre,
+          tipo: perfume.tipo,
+          precio: perfume.precio,
+          cantidad: 1
+        });
+      }
+
       localStorage.setItem("carrito", JSON.stringify(carrito));
       mostrarCarrito();
+      actualizarContador();
 
       Toastify({
         text: `Has agregado "${perfume.nombre}" al carrito 🛒`,
@@ -67,43 +83,43 @@ function mostrarPerfumes(lista) {
       }).showToast();
     });
 
-    card.appendChild(AgregarAlCarrito);
+    card.appendChild(botonAgregar);
     shopcontent.appendChild(card);
   });
 }
 
 botonBuscar.addEventListener("click", () => {
   const texto = inputBuscar.value.trim().toLowerCase();
-
-  const resultados = perfumes.filter(perfume =>
-    perfume.nombre.toLowerCase().includes(texto)
-  );
-
-  mostrarPerfumes(resultados.length > 0 ? resultados : perfumes);
+  const resultados = perfumes.filter(perfume => perfume.nombre.toLowerCase().includes(texto));
+  mostrarPerfumes(resultados);
 });
 
 function mostrarCarrito() {
-  carritocontent.innerHTML = ""; 
+  carritocontent.innerHTML = "";
 
   carrito.forEach((item, index) => {
     const itemDiv = document.createElement("div");
     itemDiv.className = "item-carrito";
     itemDiv.innerHTML = `
-      <p class="itemscarrito">${item.nombre} - ${item.tipo} - $${item.precio}</p>
+      <p class="itemscarrito">${item.nombre} - ${item.tipo} - $${item.precio} x ${item.cantidad}</p>
       <button class="eliminarbutton">Eliminar</button>
     `;
 
     const eliminarButton = itemDiv.querySelector(".eliminarbutton");
     eliminarButton.addEventListener("click", () => {
-      eliminarDelCarrito(index);
+      carrito.splice(index, 1);
+      localStorage.setItem("carrito", JSON.stringify(carrito));
+      mostrarCarrito();
+      actualizarContador();
     });
 
     carritocontent.appendChild(itemDiv);
   });
+
+  actualizarContador();
 }
 
-function eliminarDelCarrito(index) {
-  carrito.splice(index, 1); 
-  localStorage.setItem("carrito", JSON.stringify(carrito));
-  mostrarCarrito(); 
+function actualizarContador() {
+  const totalItems = carrito.reduce((acc, item) => acc + item.cantidad, 0);
+  contadorCarrito.innerText = totalItems;
 }
